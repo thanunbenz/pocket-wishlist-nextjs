@@ -127,7 +127,7 @@ export default function Home() {
 
     loadData();
     updateWishlistCount();
-  }, []);
+  }, [updateWishlistCount]);
 
   if (loading) {
     return (

@@ -46,7 +46,8 @@ export default function CardItem({ card, onWishlistChange }: CardItemProps) {
   }), []);
 
   const rarityColor = useMemo(() => {
-    return rarityColorMap[card.rarity?.toLowerCase() || ''] || 'text-gray-600 bg-gray-100';
+    const rarity = card.rarity?.toLowerCase() || '';
+    return rarityColorMap[rarity as keyof typeof rarityColorMap] || 'text-gray-600 bg-gray-100';
   }, [card.rarity, rarityColorMap]);
 
 
@@ -124,7 +125,8 @@ export default function CardItem({ card, onWishlistChange }: CardItemProps) {
           {card.packs && card.packs.length > 0 && (
             <div className="flex flex-wrap gap-1">
               {card.packs.map((pack, index) => {
-                const packColor = packColorMap[pack.toLowerCase()] || 'bg-gray-100 text-gray-700';
+                const packLower = pack.toLowerCase();
+                const packColor = packColorMap[packLower as keyof typeof packColorMap] || 'bg-gray-100 text-gray-700';
                 return (
                   <span 
                     key={index}

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { AlertTriangle, Bug, Database, FileX } from 'lucide-react';
+import type { PokemonCard } from '@/types/pokemon';
 
 interface ErrorTestPanelProps {
   onTestError: (errorType: string) => void;
@@ -52,11 +53,13 @@ export default function ErrorTestPanel({ onTestError }: ErrorTestPanelProps) {
           { label: null },
           { label: { eng: null } },
           undefined
-        ] as any;
+        ];
         
         try {
-          const { exportCardsToExcel } = require('@/lib/excel');
-          exportCardsToExcel(invalidData);
+          // Dynamic import to avoid ESLint error
+          import('@/lib/excel').then(({ exportCardsToExcel }) => {
+            exportCardsToExcel(invalidData as unknown as PokemonCard[]);
+          });
         } catch (error) {
           console.log('Export error triggered:', error);
         }
