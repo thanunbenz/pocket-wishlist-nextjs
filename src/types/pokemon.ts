@@ -4,6 +4,7 @@ export interface PokemonCard {
   rarity: string;
   rarityCode: string;
   imageName: string;
+  imageUrl?: string;
   label: {
     slug: string;
     eng: string;

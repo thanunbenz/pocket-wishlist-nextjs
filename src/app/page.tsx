@@ -7,7 +7,7 @@ import { getAllData } from '@/lib/api';
 import { getWishlist, clearWishlist } from '@/lib/wishlist';
 import CardItem from '@/components/CardItem';
 import FilterBar from '@/components/FilterBar';
-import ErrorTestPanel from '@/components/ErrorTestPanel';
+// import ErrorTestPanel from '@/components/ErrorTestPanel';
 
 export default function Home() {
   const [cards, setCards] = useState<PokemonCard[]>([]);
@@ -196,7 +196,7 @@ export default function Home() {
       </div>
       
       {/* Error Testing Panel - Only show in development */}
-      <ErrorTestPanel onTestError={handleTestError} />
+      {/* <ErrorTestPanel onTestError={handleTestError} /> */}
     </div>
   );
 }

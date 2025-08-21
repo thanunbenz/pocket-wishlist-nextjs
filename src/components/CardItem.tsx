@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import Image from 'next/image';
 import { Heart } from 'lucide-react';
 import { PokemonCard } from '@/types/pokemon';
 import { addToWishlist, removeFromWishlist, isInWishlist } from '@/lib/wishlist';
@@ -12,6 +13,7 @@ interface CardItemProps {
 
 export default function CardItem({ card, onWishlistChange }: CardItemProps) {
   const [inWishlist, setInWishlist] = useState(false);
+  const [imageError, setImageError] = useState(false);
   
   useEffect(() => {
     setInWishlist(isInWishlist(card));
@@ -20,6 +22,14 @@ export default function CardItem({ card, onWishlistChange }: CardItemProps) {
   const pokemonInitial = useMemo(() => {
     return (card.label?.eng || '?').charAt(0).toUpperCase();
   }, [card.label?.eng]);
+
+  const imageUrl = useMemo(() => {
+  let setCode = card.set.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
+  if (setCode.startsWith("Promo-")) {
+    setCode = setCode.replace(/^Promo-/, "P-");
+  }
+  return `https://cdn.pockettrade.app/images/webp/en/${setCode}_${card.number}_ENG.webp`;
+}, [card.set, card.number]);
 
   const toggleWishlist = useCallback(() => {
     if (inWishlist) {
@@ -89,32 +99,42 @@ export default function CardItem({ card, onWishlistChange }: CardItemProps) {
   }), []);
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg hover:border-gray-300 transition-colors">
-      <div className="relative p-4">
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-              <span className="text-sm font-medium text-gray-700">
+    <div className="bg-white border border-gray-200 rounded-lg hover:border-gray-300 transition-colors overflow-hidden">
+      <div className="relative aspect-[3/4] bg-gray-100">
+        {!imageError ? (
+          <Image
+            src={imageUrl}
+            alt={card.label?.eng || 'Pokemon Card'}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
+            className="object-contain"
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center">
+              <span className="text-2xl font-bold text-gray-400">
                 {pokemonInitial}
               </span>
             </div>
-            <div>
-              <h3 className="font-medium text-gray-900 text-sm">
-                {card.label?.eng || 'Unknown Pokemon'}
-              </h3>
-              <p className="text-xs text-gray-500">
-                {card.set} #{card.number}
-              </p>
-            </div>
           </div>
-          <button
-            onClick={toggleWishlist}
-            className="p-1 hover:bg-gray-50 rounded transition-colors"
-          >
-            <Heart className={`w-4 h-4 ${inWishlist ? 'fill-gray-700 text-gray-700' : 'text-gray-400'}`} />
-          </button>
+        )}
+        <button
+          onClick={toggleWishlist}
+          className="absolute top-2 right-2 p-2 bg-white/90 hover:bg-white rounded-full transition-colors shadow-sm"
+        >
+          <Heart className={`w-5 h-5 ${inWishlist ? 'fill-red-500 text-red-500' : 'text-gray-400'}`} />
+        </button>
+      </div>
+      <div className="p-3">
+        <div className="mb-2">
+          <h3 className="font-medium text-gray-900 text-sm">
+            {card.label?.eng || 'Unknown Pokemon'}
+          </h3>
+          <p className="text-xs text-gray-500">
+            {card.set} #{card.number}
+          </p>
         </div>
-        
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <span className={`px-2 py-1 rounded text-xs ${rarityColor}`}>
