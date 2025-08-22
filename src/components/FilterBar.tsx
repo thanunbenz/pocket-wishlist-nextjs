@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
-import { Search, Filter, Heart, Trash2, Eye, ArrowLeft } from 'lucide-react';
+import { Search, Filter, Heart, Trash2, Eye, ArrowLeft, Upload } from 'lucide-react';
 import { FilterOptions, PokemonSet, RarityMap, PokemonCard } from '@/types/pokemon';
 import { exportWishlistToExcel } from '@/lib/excel';
 import { getWishlist } from '@/lib/wishlist';
@@ -16,6 +16,7 @@ interface FilterBarProps {
   showWishlistOnly: boolean;
   onToggleWishlistView: () => void;
   onClearWishlist: () => void;
+  onImportClick: () => void;
 }
 
 export default function FilterBar({ 
@@ -27,7 +28,8 @@ export default function FilterBar({
   allPacks,
   showWishlistOnly,
   onToggleWishlistView,
-  onClearWishlist
+  onClearWishlist,
+  onImportClick
 }: FilterBarProps) {
   const handleExportWishlist = useCallback(() => {
     if (typeof window === 'undefined') return;
@@ -81,6 +83,14 @@ export default function FilterBar({
               Clear Wishlist
             </button>
           )}
+          
+          <button
+            onClick={onImportClick}
+            className="flex items-center gap-2 px-3 py-2 bg-gray-800 text-white rounded-md text-sm hover:bg-gray-900 transition-colors"
+          >
+            <Upload className="w-4 h-4" />
+            Import Excel
+          </button>
           
           <button
             onClick={handleExportWishlist}

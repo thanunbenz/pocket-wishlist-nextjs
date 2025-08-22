@@ -7,6 +7,7 @@ import { getAllData } from '@/lib/api';
 import { getWishlist, clearWishlist } from '@/lib/wishlist';
 import CardItem from '@/components/CardItem';
 import FilterBar from '@/components/FilterBar';
+import ExcelUpload from '@/components/ExcelUpload';
 // import ErrorTestPanel from '@/components/ErrorTestPanel';
 
 export default function Home() {
@@ -17,6 +18,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [wishlistCount, setWishlistCount] = useState(0);
   const [showWishlistOnly, setShowWishlistOnly] = useState(false);
+  const [showExcelUpload, setShowExcelUpload] = useState(false);
   
   const [filters, setFilters] = useState<FilterOptions>({
     search: '',
@@ -175,6 +177,7 @@ export default function Home() {
           showWishlistOnly={showWishlistOnly}
           onToggleWishlistView={toggleWishlistView}
           onClearWishlist={handleClearWishlist}
+          onImportClick={() => setShowExcelUpload(true)}
         />
 
         <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
@@ -197,6 +200,17 @@ export default function Home() {
       
       {/* Error Testing Panel - Only show in development */}
       {/* <ErrorTestPanel onTestError={handleTestError} /> */}
+      
+      {showExcelUpload && (
+        <ExcelUpload
+          onClose={() => setShowExcelUpload(false)}
+          onUploadComplete={() => {
+            updateWishlistCount();
+            // Force re-render to show updated wishlist
+            setCards(prevCards => [...prevCards]);
+          }}
+        />
+      )}
     </div>
   );
 }
