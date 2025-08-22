@@ -106,11 +106,11 @@ export default function Home() {
     setShowWishlistOnly(!showWishlistOnly);
   }, [showWishlistOnly]);
 
-  const handleTestError = useCallback((errorType: string) => {
-    console.log(`Testing ${errorType} error scenario`);
-    // Force a re-render to see the effects
-    updateWishlistCount();
-  }, [updateWishlistCount]);
+  // const handleTestError = useCallback((errorType: string) => {
+  //   console.log(`Testing ${errorType} error scenario`);
+  //   // Force a re-render to see the effects
+  //   updateWishlistCount();
+  // }, [updateWishlistCount]);
 
   useEffect(() => {
     const loadData = async () => {

@@ -34,28 +34,29 @@ export async function POST(request: NextRequest) {
     const wishlistItems: PokemonCard[] = [];
     const errors: string[] = [];
 
-    jsonData.forEach((row: any, index: number) => {
+    jsonData.forEach((row: unknown, index: number) => {
       const rowNum = index + 2; // Excel row number (1-indexed + header row)
+      const data = row as Record<string, unknown>;
       
       // Required fields
-      if (!row['Set'] || !row['Number']) {
+      if (!data['Set'] || !data['Number']) {
         errors.push(`Row ${rowNum}: Missing required fields (Set and Number)`);
         return;
       }
 
       try {
         const card: PokemonCard = {
-          set: String(row['Set']).trim(),
-          number: parseInt(String(row['Number']), 10),
-          rarity: row['Rarity'] || '',
-          rarityCode: row['Rarity Code'] || row['RarityCode'] || '',
-          imageName: row['Image Name'] || row['ImageName'] || '',
-          imageUrl: row['Image URL'] || row['ImageURL'] || '',
+          set: String(data['Set']).trim(),
+          number: parseInt(String(data['Number']), 10),
+          rarity: String(data['Rarity'] || ''),
+          rarityCode: String(data['Rarity Code'] || data['RarityCode'] || ''),
+          imageName: String(data['Image Name'] || data['ImageName'] || ''),
+          imageUrl: String(data['Image URL'] || data['ImageURL'] || ''),
           label: {
-            slug: row['Pokemon'] || row['Name'] || '',
-            eng: row['Pokemon'] || row['Name'] || ''
+            slug: String(data['Pokemon'] || data['Name'] || ''),
+            eng: String(data['Pokemon'] || data['Name'] || '')
           },
-          packs: row['Packs'] ? String(row['Packs']).split(',').map(p => p.trim()) : []
+          packs: data['Packs'] ? String(data['Packs']).split(',').map(p => p.trim()) : []
         };
 
         // Validate number
@@ -65,7 +66,7 @@ export async function POST(request: NextRequest) {
         }
 
         wishlistItems.push(card);
-      } catch (error) {
+      } catch {
         errors.push(`Row ${rowNum}: Failed to parse data`);
       }
     });
